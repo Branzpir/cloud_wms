@@ -1,7 +1,8 @@
 <?php
-	require_once 'utility.php';
-	$C = connect();
 	date_default_timezone_set('Australia/Perth');
+	require_once 'utility.php';
+	//require_once 'barcode.php';
+	$C = connect();
 	if(isset($_POST['submit']))
 	{
 		sqlInsert($C, 'INSERT INTO item_log VALUES(NULL, ?, ?, ?)', 'sss', $_POST['item'], $_POST['loc'], date('Y/m/d h:i:s'));
@@ -11,21 +12,35 @@
 <!DOCTYPE html>
 <html>
 <body>
-<form method='POST' action=''>
-	<input type='text' name='item'>
-	<input type='text' name='loc'>
-	<input type='submit' name='submit'>
-</form>
+<style>
+	@media print{ .kPrint{display:none;} }
+</style>
+
+<h1>Search for product</h1>
 <form method='POST' action=''>
 	<input type='text' name='search'>
 	<input type='submit' name='sub'>
 </form>
+<h1>Print product</h1>
 <form method='POST' action=''>
 	<input type='text' name='item' style='text-transfrom:uppercase'>
 	<input type='text' name='quantity'>
-	<input type='submit' name='print' value='Print'>
+	<input type="submit" name="buscar"></input>
+	<?php if(isset($_POST['buscar'])) {
+		?><button onclick="window.print();" class="kPrint" name="print">Print</button>
+		<?php
+	}
+		?>
 </form>
-<!--https://stackoverflow.com/questions/16894683/how-to-print-html-content-on-click-of-a-button-but-not-the-page-->
+<?php
+if(isset($_POST['quantity']))
+{
+ $item = $_POST['item'];
+ $quantity = $_POST['quantity'];
+ $time = time();
+ echo "Item : $item<br> Quantity : $quantity <br> <img alt='".$item.$quantity.$time."' src='barcode.php?codetype=Code39&size=20&text=".$item.$quantity.$time."&print=true'/>";
+}
+?>
 <?php
 	if(isset($_POST['sub']))
 	{
