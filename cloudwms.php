@@ -38,7 +38,7 @@ if(isset($_POST['quantity']))
  $item = $_POST['item'];
  $quantity = $_POST['quantity'];
  $time = time();
- echo "Item : $item<br> Quantity : $quantity <br> <img alt='".$item.$quantity.$time."' src='barcode.php?codetype=Code39&size=20&text=".$item.$quantity.$time."&print=true'/>";
+ echo "Item : $item<br> Quantity : $quantity <br> <img alt='".$item.$quantity.$time."' src='barcode.php?codetype=Code39&size=80&text=".$item.$quantity.$time."&print=true'/>";
 }
 ?>
 <?php
