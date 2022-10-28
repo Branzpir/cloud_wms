@@ -1,7 +1,6 @@
 <?php
 	date_default_timezone_set('Australia/Perth');
 	require_once 'utility.php';
-	//require_once 'barcode.php';
 	$C = connect();
 	if(isset($_POST['submit']))
 	{
@@ -60,8 +59,7 @@ if(isset($_POST['quantity']))
         	else
         	{
             	echo "<p class='message'>No results for this search entered</p>";
-        	}
-    	//$res1->free();  
+        	} 
 		}
 	}
 	
