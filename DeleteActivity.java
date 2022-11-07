@@ -109,3 +109,4 @@ public class DeleteActivity extends MainActivity implements View.OnClickListener
     public void onClick(View v) {
         getData();
     }
+}
