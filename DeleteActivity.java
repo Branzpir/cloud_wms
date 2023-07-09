@@ -8,9 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,20 +25,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DeleteActivity extends MainActivity implements View.OnClickListener{
     EditText bin_location_input;
     Button btn;
     ProgressDialog loading;
-    private static final String DATA_URL = "http://192.168.0.79/select.php?id=";
+    private static final String DATA_URL = "https://eurotechwms.com.au/select.php?id=";
     private static final String KEY_ITEM = "item";
     private static final String KEY_LOCATION = "location";
     private static final String KEY_TIME = "time";
     private static final String JSON_ARRAY = "result";
     List<Items> items = new ArrayList<>();
     RecyclerView recyclerView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +60,14 @@ public class DeleteActivity extends MainActivity implements View.OnClickListener
     }
 
     private void getData() {
-        String id = bin_location_input.getText().toString().trim();
-        if(id.equals("")) {
+        String[] arr = bin_location_input.getText().toString().split("/");
+        if(arr[0].equals("")) {
             Toast.makeText(this, "Scan Bin Location", Toast.LENGTH_LONG).show();
             return;
         }
         loading = ProgressDialog.show(this, "Please wait...", "Fetching...",false,false);
         String url = DATA_URL+bin_location_input.getText().toString().trim();
+
 
         StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -88,18 +93,15 @@ public class DeleteActivity extends MainActivity implements View.OnClickListener
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONArray result = jsonObject.getJSONArray(JSON_ARRAY);
-            //StringBuilder output = new StringBuilder();
             for(int i=0;i<result.length();i++) {
                 JSONObject itemData = result.getJSONObject(i);
                 item = itemData.getString(KEY_ITEM);
                 location = itemData.getString(KEY_LOCATION);
                 time = itemData.getString(KEY_TIME);
-                //output.append(String.format("\nItem:\t%s\nLocation:\t%s\nTime:\t%s\n", item, location, time));
-                // currently only works when there is more than 1 entry in a particular location
                 items.add(new Items(item, location, time));
             }
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter(new ItemAdapter(getApplicationContext(), items));
+            recyclerView.setAdapter(new ItemAdapter(DeleteActivity.this, items));
         } catch (JSONException e) {
             e.printStackTrace();
         }
